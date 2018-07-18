@@ -43,11 +43,7 @@ jobs:
           command: elasticsearch-6.0.1/bin/elasticsearch
           background: true
       - run: sleep 10 && wget --waitretry=5 --retry-connrefused -v http://127.0.0.1:9200/
-      - save_cache:
-          key: job-medley-elasticsearch
-          paths:
-            - ./elasticsearch-x.x.x
-
+      - run: curl http://127.0.0.1:9200/
       - store_artifacts:
           path: artifacts/
       - store_test_results:
