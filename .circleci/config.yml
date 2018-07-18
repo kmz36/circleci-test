@@ -47,7 +47,7 @@ jobs:
       - run:
           name: MySQL run check
           command: |
-            this is test "hogehuga"
+            echo this is test "hogehuga"
 
 #      - run:
 #          name: MySQL run check
