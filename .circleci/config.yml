@@ -55,11 +55,16 @@ jobs:
           paths:
             - ./*
   rspec:
-    parallelism: 2
+    parallelism: 1
     <<: *defaults
     steps:
       - attach_workspace:
           at: ~/stealth_api
+      - run:
+          name: MySQL run check
+          command: |
+            this is test "hogehuga"
+
 #      - run:
 #          name: MySQL run check
 #          command: |
