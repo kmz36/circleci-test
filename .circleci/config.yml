@@ -54,7 +54,6 @@ jobs:
             bundle exec rspec --profile 10 \
               --format RspecJunitFormatter \
               --out rspec/rspec.xml \
-              --color \
               --require spec_helper spec \
               --format progress \
               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
