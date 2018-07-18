@@ -18,14 +18,14 @@ defaults: &defaults
         command: elasticsearch-plugin install analysis-kuromoji
         name: elasticsearch
         environment:
-          TZ: /usr/share/zoneinfo/Asia/Tokyo
+#          TZ: /usr/share/zoneinfo/Asia/Tokyo
           http.host: '0.0.0.0'
           http.port: 9200
-          xpack.security.enabled: false
-          xpack.monitoring.enabled: false
-          xpack.watcher.enabled: false
-          xpack.graph.enabled: false
-          xpack.ml.enabled: false
+#          xpack.security.enabled: false
+#          xpack.monitoring.enabled: false
+#          xpack.watcher.enabled: false
+#          xpack.graph.enabled: false
+#          xpack.ml.enabled: false
           ES_JAVA_OPTS: '-Xms256m -Xmx256m'
 
 version: 2
