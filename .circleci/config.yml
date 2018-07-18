@@ -1,0 +1,100 @@
+defaults: &defaults
+    working_directory: ~/stealth_api
+    docker:
+      - image: circleci/ruby:2.5.0
+        environment:
+          TZ: /usr/share/zoneinfo/Asia/Tokyo
+          BUNDLE_APP_CONFIG: ~/stealth_api/.bundle/config
+          DB_HOST_NAME: 127.0.0.1
+      - image: circleci/mysql:5.7.20
+        environment:
+          TZ: /usr/share/zoneinfo/Asia/Tokyo
+      - image: redis
+        environment:
+          TZ: /usr/share/zoneinfo/Asia/Tokyo
+          REDIS_HOST: 127.0.0.1
+          REDIS_URL: redis://127.0.0.1:6379
+      - image: docker.elastic.co/elasticsearch/elasticsearch:6.0.1
+        command: elasticsearch-plugin install analysis-kuromoji
+        name: elasticsearch
+        environment:
+          TZ: /usr/share/zoneinfo/Asia/Tokyo
+          http.host: '0.0.0.0'
+          transport.host: '127.0.0.1'
+          xpack.security.enabled: false
+          xpack.monitoring.enabled: false
+          xpack.watcher.enabled: false
+          xpack.graph.enabled: false
+          xpack.ml.enabled: false
+          ES_JAVA_OPTS: '-Xms256m -Xmx256m'
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+version: 2
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          key: stealth_api-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: bundle 1.16.2
+          command: gem install bundler -v 1.16.2
+      - run:
+          name: bundle install
+#          command: bundle install --jobs=4 --path=vendor/bundle
+          command: mkdir -p vendor/bundle
+       - save_cache:
+          key: stealth_api-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - persist_to_workspace:
+          root: ~/stealth_api
+          paths:
+            - ./*
+  rspec:
+    parallelism: 2
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/stealth_api
+#      - run:
+#          name: MySQL run check
+#          command: |
+#            for i in 5
+#            do
+#              mysql -h 127.0.0.1 -u root -e 'show databases' || (sleep 5; false) && break
+#            done
+#      - run:
+#          name: database create
+#          command: bundle exec rake db:create db:schema:load
+#          environment:
+#            RAILS_ENV: test
+#      - run:
+#          name: run test
+#          command: |
+#            bundle exec rspec --profile 20 \
+#              --out rspec/rspec.xml \
+#              --color \
+#              --require spec_helper spec \
+#              --format progress \
+#              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+#          environment:
+#            RAILS_ENV: test
+      - store_artifacts:
+          path: artifacts/
+      - store_test_results:
+          path: rspec/
+workflows:
+  version: 2
+  workflows:
+    jobs:
+      - build
+      - rspec:
+          requires:
+            - build
+#          filters:
+#            branches:
+#              ignore: /^sandbox.*|^master$|^staging$/
