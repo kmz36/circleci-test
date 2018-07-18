@@ -52,7 +52,7 @@ jobs:
           name: run test
           command: |
             bundle exec rspec --profile 10 \
-              --out rspec/rspec.xml \
+              --out rspec/rspec.txt \
               --color \
               --require spec_helper spec \
               --format progress \
