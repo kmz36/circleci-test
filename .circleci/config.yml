@@ -27,9 +27,6 @@ defaults: &defaults
           xpack.graph.enabled: false
           xpack.ml.enabled: false
           ES_JAVA_OPTS: '-Xms256m -Xmx256m'
-        ports:
-          - "9200:9200"
-          - "9300:9300"
 
 version: 2
 jobs:
@@ -37,19 +34,6 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          key: stealth_api-{{ checksum "Gemfile.lock" }}
-      - run:
-          name: bundle 1.16.2
-          command: gem install bundler -v 1.16.2
-      - run:
-          name: bundle install
-#          command: bundle install --jobs=4 --path=vendor/bundle
-          command: mkdir -p vendor/bundle
-       - save_cache:
-          key: stealth_api-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
       - persist_to_workspace:
           root: ~/stealth_api
           paths:
