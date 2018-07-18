@@ -47,7 +47,7 @@ jobs:
       - run:
           name: MySQL run check
           command: |
-            echo this is test "hogehuga"
+            curl http://127.0.0.1:9200/
 
 #      - run:
 #          name: MySQL run check
