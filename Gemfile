@@ -99,6 +99,7 @@ group :development, :test do
   gem "rspec"
   gem "rspec-rails"
   gem "parallel_tests"
+  gem "rspec_junit_formatter"
 
   # mail
   gem 'letter_opener'
