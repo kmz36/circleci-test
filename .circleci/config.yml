@@ -20,7 +20,7 @@ defaults: &defaults
         environment:
           TZ: /usr/share/zoneinfo/Asia/Tokyo
           http.host: '0.0.0.0'
-          transport.host: '127.0.0.1'
+          http.port: 9200
           xpack.security.enabled: false
           xpack.monitoring.enabled: false
           xpack.watcher.enabled: false
