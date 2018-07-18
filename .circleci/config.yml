@@ -47,7 +47,7 @@ jobs:
       - run:
           name: MySQL run check
           command: |
-            curl http://localhost:9200/
+            curl http://127.0.0.1:9200/
 
 #      - run:
 #          name: MySQL run check
