@@ -14,12 +14,6 @@ defaults: &defaults
           TZ: /usr/share/zoneinfo/Asia/Tokyo
           REDIS_HOST: 127.0.0.1
           REDIS_URL: redis://127.0.0.1:6379
-      - image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.0.1
-        name: elasticsearch
-        command: elasticsearch-plugin install --batch analysis-kuromoji
-        environment:
-          TZ: /usr/share/zoneinfo/Asia/Tokyo
-          ES_JAVA_OPTS: '-Xms512m -Xmx512m'
 
 version: 2
 jobs:
@@ -49,6 +43,28 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/stealth_api
+          
+      - restore_cache:
+          key: stealth_api-elasticsearch
+      - run:
+          name: elasticsearch install
+          command: |
+            wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.0.1.tar.gz && \
+              tar -xvf elasticsearch-6.0.1.tar.gz && \
+              if [ -z "`elasticsearch-6.0.1/bin/plugin -l | grep analysis-kuromoji`" ]; then \
+              elasticsearch-6.0.1/bin/plugin -install elasticsearch/elasticsearch-analysis-kuromoji/6.0.1; fi
+      - save_cache:
+          key: stealth_api-elasticsearch
+          paths:
+            - ./elasticsearch-6.0.1
+      - run:
+          name: start elasticsearch
+          command: |
+            elasticsearch-6.0.1/bin/elasticsearch: {background: true}
+      - run:
+          name: wait elasticsearch
+          command: |
+            sleep 10 && wget --waitretry=5 --retry-connrefused -v http://127.0.0.1:9200/
       - run:
           name: database create
           command: bundle exec rake db:create db:schema:load
