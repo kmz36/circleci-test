@@ -73,10 +73,6 @@ jobs:
           environment:
             RAILS_ENV: test
             TEST_CLUSTER_COMMAND: elasticsearch-6.0.1/bin/elasticsearch
-      - run:
-          name: elastic check
-          command: |
-            curl http://localhost:9200/_nodes/stats?pretty
       - store_artifacts:
           path: artifacts/
       - store_test_results:
