@@ -44,7 +44,7 @@ jobs:
       - attach_workspace:
           at: ~/stealth_api
       - restore_cache:
-          key: v12-stealth_api-elasticsearch
+          key: v1-stealth_api-elasticsearch
       - run:
           name: elasticsearch install
           command: |
@@ -53,18 +53,17 @@ jobs:
               if [ -z "`elasticsearch-6.0.1/bin/elasticsearch-plugin list | grep analysis-kuromoji`" ]; then \
               elasticsearch-6.0.1/bin/elasticsearch-plugin install analysis-kuromoji; fi
       - save_cache:
-          key: v12-stealth_api-elasticsearch
+          key: v1-stealth_api-elasticsearch
           paths:
-            - ./elasticsearch-6.0.1
+            - elasticsearch-6.0.1
       - run:
           name: start elasticsearch
           command: |
-            pwd;
             elasticsearch-6.0.1/bin/elasticsearch -d
       - run:
           name: wait elasticsearch
           command: |
-            sleep 10 && wget --waitretry=5 --retry-connrefused -v http://127.0.0.1:9200/
+            sleep 10 && wget --tries 5 --waitretry 5 --retry-connrefused -v http://localhost:9200/
       - run:
           name: database create
           command: bundle exec rake db:create db:schema:load
