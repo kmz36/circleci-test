@@ -44,22 +44,25 @@ jobs:
       - attach_workspace:
           at: ~/stealth_api
       - restore_cache:
-          key: v1-stealth_api-elasticsearch
+          key: v12-stealth_api-elasticsearch
       - run:
           name: elasticsearch install
           command: |
             wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.0.1.tar.gz && \
               tar -xvf elasticsearch-6.0.1.tar.gz && \
+              if [ -z "`elasticsearch-6.0.1/bin/elasticsearch-plugin list | grep analysis-kuromoji`" ]; then \
+              elasticsearch-6.0.1/bin/elasticsearch-plugin install analysis-kuromoji; fi
+
               elasticsearch-6.0.1/bin/elasticsearch-plugin install analysis-kuromoji
       - save_cache:
-          key: v1-stealth_api-elasticsearch
+          key: v12-stealth_api-elasticsearch
           paths:
             - ./elasticsearch-6.0.1
       - run:
           name: start elasticsearch
           command: |
             pwd;
-            elasticsearch-6.0.1/bin/elasticsearch: {background: true}
+            elasticsearch-6.0.1/bin/elasticsearch -d
       - run:
           name: wait elasticsearch
           command: |
