@@ -43,7 +43,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/stealth_api
-          
       - restore_cache:
           key: v1-stealth_api-elasticsearch
       - run:
@@ -59,6 +58,7 @@ jobs:
       - run:
           name: start elasticsearch
           command: |
+            pwd;
             elasticsearch-6.0.1/bin/elasticsearch: {background: true}
       - run:
           name: wait elasticsearch
