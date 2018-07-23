@@ -117,6 +117,8 @@ group :development, :test do
   gem "shrine-memory"
   gem 'mock_redis'
   gem 'timecop'
+  gem 'elasticsearch-extensions', '0.0.29'
+
 end
 
 group :development do

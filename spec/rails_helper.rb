@@ -5,6 +5,8 @@ require File.expand_path('../../config/environment', __FILE__)
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
+require 'elasticsearch/extensions/test/cluster'
+
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -54,4 +56,31 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  config.before(:suite) do
+    if ENV['TEST_CLUSTER_COMMAND'].present?
+      Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).start unless Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).running?
+      ENV.update("ELASTICSEARCH_URL" => "http://localhost:#{elastic_options[:port].to_s}")
+    end
+  end
+
+  config.after(:suite) do
+    if ENV['TEST_CLUSTER_COMMAND'].present?
+      Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).stop if Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).running?
+    end
+  end
+
 end
+
+private
+def elastic_options
+  port = 9250
+  {
+      command: ENV['TEST_CLUSTER_COMMAND'],
+      cluster_name: "test-cluster#{port.to_s}",
+      number_of_nodes: 1,
+      node_name: 'test-node',
+      port: port,
+      quiet: true
+  }
+end
+
