@@ -58,14 +58,14 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.before(:suite) do
     if ENV['TEST_CLUSTER_COMMAND'].present?
-      Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).start unless Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).running?
+      pp Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).start unless Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).running?
       ENV.update("ELASTICSEARCH_URL" => "http://localhost:#{elastic_options[:port].to_s}")
     end
   end
 
   config.after(:suite) do
     if ENV['TEST_CLUSTER_COMMAND'].present?
-      Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).stop if Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).running?
+      pp Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).stop if Elasticsearch::Extensions::Test::Cluster::Cluster.new(elastic_options).running?
     end
   end
 
