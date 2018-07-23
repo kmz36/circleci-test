@@ -59,10 +59,7 @@ jobs:
       - run:
           name: start elasticsearch
           command: |
-            elasticsearch-6.0.1/bin/elasticsearch
-      - run:
-          name: wait elasticsearch
-          command: |
+            elasticsearch-6.0.1/bin/elasticsearch -d && \
             sleep 10 && wget --tries 5 --waitretry 5 --retry-connrefused -v http://localhost:9200/
       - run:
           name: database create
