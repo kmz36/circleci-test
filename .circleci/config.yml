@@ -14,6 +14,12 @@ defaults: &defaults
           TZ: /usr/share/zoneinfo/Asia/Tokyo
           REDIS_HOST: 127.0.0.1
           REDIS_URL: redis://127.0.0.1:6379
+      - image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.0.1
+        name: elasticsearch
+        command: elasticsearch-plugin install --batch analysis-kuromoji
+        environment:
+          TZ: /usr/share/zoneinfo/Asia/Tokyo
+          ES_JAVA_OPTS: '-Xms512m -Xmx512m'
 
 version: 2
 jobs:
