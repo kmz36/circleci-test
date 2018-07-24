@@ -52,6 +52,11 @@ jobs:
             tar -xvf elasticsearch-6.0.1.tar.gz && \
             if [ -z "`elasticsearch-6.0.1/bin/elasticsearch-plugin list | grep analysis-kuromoji`" ]; then \
             elasticsearch-6.0.1/bin/elasticsearch-plugin install analysis-kuromoji; fi
+      - run:
+          name: start elastic
+          command: |
+            elasticsearch-6.0.1/bin/elasticsearch -d
+          background: true
       - save_cache:
           key: v2-stealth_api-elasticsearch
           paths:
